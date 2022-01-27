@@ -18,13 +18,12 @@ const FlagComboParent = styled.code`
 
 const Parent = styled.legend`
 	font-size: 1em;
-	margin: 0 auto 2vw,
-	line-height: 1.25em,
+	margin: 0 auto 2vw;
+	line-height: 1.25em;
 `;
 
 const Key = styled.span`
 	color: red;
-
 `;
 
 const Click = styled.span`
