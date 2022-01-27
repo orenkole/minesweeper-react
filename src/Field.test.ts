@@ -27,6 +27,20 @@ describe('FIeld generator', () => {
 			expect(() => fieldGenerator(1, -1)).toThrowError(errorText);
 			expect(() => fieldGenerator(1, 2)).toThrowError(errorText);
 		})
+		it('Big field without mine', () => {
+      expect(fieldGenerator(10, 0)).toStrictEqual([
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty, empty, empty, empty, empty],
+      ]);
+    });
 		it('Smallest possible field with mine', () => {
 			expect(fieldGenerator(1, 1)).toStrictEqual([[bomb]])
 		})
