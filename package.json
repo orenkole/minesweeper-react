@@ -8,7 +8,7 @@
     "build:dev": "webpack --mode=development",
     "duild:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch --mode=development",
-    "serve": "webpack serve --mode=development",
+    "start": "webpack serve --mode=development",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
