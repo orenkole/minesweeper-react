@@ -14,6 +14,6 @@ export const TopPanel = Template.bind({});
 TopPanel.args = {
 	children: 'Minesweeper',
 	feature: 'Flag',
-	firstAction: 'ctrl',
-	secondAction: 'click',
+	firstAction: 'Ctrl',
+	secondAction: 'Click',
 }

@@ -11,7 +11,8 @@
     "serve": "webpack serve --mode=development",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "chromatic": "npx chromatic --project-token=b9d564e326b1"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +36,7 @@
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
     "babel-loader": "^8.2.3",
+    "chromatic": "^6.4.1",
     "css-loader": "^6.5.1",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
