@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import styled from "@emotion/styled"
-import { Cell as CellType, CellState } from "@/helpers/Field";
+import { Cell as CellType, CellState, Coords } from "@/helpers/Field";
 
 const transparent = 'rgba(0,0,0,0)';
 const colors: { [key in CellType]: string } = {
@@ -19,10 +19,6 @@ const colors: { [key in CellType]: string } = {
   12: transparent,
 };
 
-export interface CellProps {
-  children: CellType;
-}
-
 export const ClosedFrame = styled.div`
   display: flex;
   align-items: center;
@@ -39,13 +35,14 @@ export const ClosedFrame = styled.div`
     filter: brightness(1.1);
   }
 `;
+
 const RevealedFrame = styled(ClosedFrame)`
   border-color: #dddddd;
   cursor: default;
   &:hover {
     filter: brightness(1);
   };
-  color: ${({children}) => colors[children as CellType] ?? transparent}
+  color: ${({ children }) => colors[children as CellType] ?? transparent};
 `;
 
 const Bomb = styled.div`
@@ -71,27 +68,73 @@ const WeakFlag = styled(Flag)`
   border-left: 0.5vh solid #f19996;
 `;
 
-export const Cell: FC<CellProps> = ({children}) => {
+export interface CellProps {
+  /**
+   * Cell status based on the CellType
+   */
+  children: CellType;
+  /**
+   * Cell coordinates
+   */
+  coords: Coords;
+  /**
+   * onClick by cell handler
+   */
+  onClick: (coords: Coords) => void;
+  /**
+   * onContextMenu by cell handler
+   */
+  onContextMenu: (coords: Coords) => void;
+}
+
+export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
+  const isActiveCell = [
+    CellState.hidden,
+    CellState.flag,
+    CellState.weakFlag,
+  ].includes(children);
+
+  const onClick = () => {
+    if(isActiveCell) {
+      rest.onClick(coords);
+    }
+  }
+
+  const onContextMenu = (elem: React.MouseEvent<HTMLElement>) => {
+    /**
+     * Prevent context menu by default
+     */
+    elem.preventDefault();
+    if(isActiveCell) {
+      rest.onContextMenu(coords);
+    }
+  }
+
+  const props = {
+    onClick,
+    onContextMenu,
+  };
+
   switch(children) {
     case CellState.empty:
-      return <RevealedFrame />
+      return <RevealedFrame {...props} />
     case CellState.hidden:
-      return <ClosedFrame />
+      return <ClosedFrame {...props} />
     case CellState.bomb:
       return (
-        <BombFrame>
+        <BombFrame {...props} >
           <Bomb />
         </BombFrame>
       )
     case CellState.flag:
       return (
-        <ClosedFrame>
+        <ClosedFrame {...props} >
           <Flag />
         </ClosedFrame>
       )
     case CellState.weakFlag:
       return (
-        <ClosedFrame>
+        <ClosedFrame {...props} >
           <WeakFlag />
         </ClosedFrame>
       )

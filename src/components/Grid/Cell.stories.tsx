@@ -7,6 +7,9 @@ import { CellState } from '@/helpers/Field';
 export default {
   title: 'Grid/Cell',
   component: Cell,
+  argTypes: {
+    coords: {defaultValue: [1, 1]},
+  },
 } as Meta;
 
 const Template: Story<CellProps> = (args) => <Cell {...args} />;
