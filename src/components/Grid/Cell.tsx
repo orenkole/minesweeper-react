@@ -115,26 +115,36 @@ export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
     onContextMenu,
   };
 
+  return <ComponentsMap {...props}>{children}</ComponentsMap>
+}
+
+interface ComponentsMapProps {
+  children: CellType;
+  onClick: (elem: React.MouseEvent<HTMLElement>) => void;
+  onContextMenu: (elem: React.MouseEvent<HTMLElement>) => void;
+}
+
+const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {
   switch(children) {
     case CellState.empty:
-      return <RevealedFrame {...props} />
+      return <RevealedFrame {...rest} />
     case CellState.hidden:
-      return <ClosedFrame {...props} />
+      return <ClosedFrame {...rest} />
     case CellState.bomb:
       return (
-        <BombFrame {...props} >
+        <BombFrame {...rest} >
           <Bomb />
         </BombFrame>
       )
     case CellState.flag:
       return (
-        <ClosedFrame {...props} >
+        <ClosedFrame {...rest} >
           <Flag />
         </ClosedFrame>
       )
     case CellState.weakFlag:
       return (
-        <ClosedFrame {...props} >
+        <ClosedFrame {...rest} >
           <WeakFlag />
         </ClosedFrame>
       )
