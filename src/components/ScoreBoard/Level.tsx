@@ -13,7 +13,7 @@ export interface LevelProps {
   /**
    * Select new lvl handler
    */
-  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export const Level: FC<LevelProps> = memo(({ children, value, onChange }) => (
