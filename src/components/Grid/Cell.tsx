@@ -21,7 +21,7 @@ const colors: { [key in CellType]: string } = {
 };
 
 interface ClosedFrameProps {
-  mousedown: boolean;
+  mousedown?: boolean;
 }
 
 export const ClosedFrame = styled.div<ClosedFrameProps>`
@@ -97,40 +97,17 @@ export const checkCellIsActive = (cell: CellType): boolean =>
   [CellState.hidden, CellState.flag, CellState.weakFlag].includes(cell);
 
 export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
-  const [mousedown, setMouseDown, setMouseUp] = useMouseDown();
-  const isActiveCell = checkCellIsActive(children);
+  const [mousedown, onMouseDown, onMouseUp] = useMouseDown();
 
-  const onClick = () => {
-    if(isActiveCell) {
-      rest.onClick(coords);
-    }
-  }
+  const onClick = () => rest.onClick(coords);
 
   const onContextMenu = (event: React.MouseEvent) => {
     /**
      * Prevent context menu by default
      */
     event.preventDefault();
-    if(isActiveCell) {
+    if(checkCellIsActive(children)) {
       rest.onContextMenu(coords);
-    }
-  }
-
-  const onMouseDown = () => {
-    if (isActiveCell) {
-      setMouseDown();
-    }
-  }
-
-  const onMouseUp = () => {
-    if(isActiveCell) {
-      setMouseUp();
-    }
-  }
-
-  const onMouseLeave = () => {
-    if(isActiveCell) {
-      setMouseUp();
     }
   }
 
@@ -141,7 +118,7 @@ export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
     mousedown,
     onMouseDown,
     onMouseUp,
-    onMouseLeave,
+    onMouseLeave: onMouseUp,
   };
 
   return <ComponentsMap {...props}>{children}</ComponentsMap>
@@ -159,14 +136,19 @@ interface ComponentsMapProps {
 }
 
 const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {
+  const nonActiveCellProps = {
+    onContextMenu: rest.onContextMenu,
+    'data-testid': rest['data-testid'],
+  };
+
   switch(children) {
     case CellState.empty:
-      return <RevealedFrame {...rest} />
+      return <RevealedFrame {...nonActiveCellProps} />
     case CellState.hidden:
       return <ClosedFrame {...rest} />
     case CellState.bomb:
       return (
-        <BombFrame {...rest} >
+        <BombFrame {...nonActiveCellProps} >
           <Bomb />
         </BombFrame>
       )
@@ -183,6 +165,6 @@ const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {
         </ClosedFrame>
       )
     default:
-      return <RevealedFrame {...rest}>{children}</RevealedFrame>
+      return <RevealedFrame {...nonActiveCellProps}>{children}</RevealedFrame>
   }
 }
