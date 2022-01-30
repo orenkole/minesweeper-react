@@ -1,6 +1,7 @@
 import React, {FC} from "react";
 import styled from "@emotion/styled"
 import { Cell as CellType, CellState, Coords } from "@/helpers/Field";
+import { useMouseDown } from "@/hooks/useMouseDown";
 
 const transparent = 'rgba(0,0,0,0)';
 const colors: { [key in CellType]: string } = {
@@ -19,7 +20,11 @@ const colors: { [key in CellType]: string } = {
   12: transparent,
 };
 
-export const ClosedFrame = styled.div`
+interface ClosedFrameProps {
+  mousedown: boolean;
+}
+
+export const ClosedFrame = styled.div<ClosedFrameProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,7 +35,8 @@ export const ClosedFrame = styled.div`
   color: transparent;
   background-color: #d1d1d1;
   border: 0.6vh solid transparent;
-  border-color: 'white #9e9e9e #9e9e9e white'; 
+  border-color: ${({mousedown = false}) =>
+    mousedown ? 'transparent' : 'white #9e9e9e #9e9e9e white'}; 
   &:hover {
     filter: brightness(1.1);
   }
@@ -91,6 +97,7 @@ export const checkCellIsActive = (cell: CellType): boolean =>
   [CellState.hidden, CellState.flag, CellState.weakFlag].includes(cell);
 
 export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
+  const [mousedown, setMouseDown, setMouseUp] = useMouseDown();
   const isActiveCell = checkCellIsActive(children);
 
   const onClick = () => {
@@ -109,10 +116,32 @@ export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
     }
   }
 
+  const onMouseDown = () => {
+    if (isActiveCell) {
+      setMouseDown();
+    }
+  }
+
+  const onMouseUp = () => {
+    if(isActiveCell) {
+      setMouseUp();
+    }
+  }
+
+  const onMouseLeave = () => {
+    if(isActiveCell) {
+      setMouseUp();
+    }
+  }
+
   const props = {
     onClick,
     onContextMenu,
     'data-testid': `${children}_${coords}`,
+    mousedown,
+    onMouseDown,
+    onMouseUp,
+    onMouseLeave,
   };
 
   return <ComponentsMap {...props}>{children}</ComponentsMap>
@@ -123,6 +152,10 @@ interface ComponentsMapProps {
   onClick: (elem: React.MouseEvent<HTMLElement>) => void;
   onContextMenu: (elem: React.MouseEvent<HTMLElement>) => void;
   'data-testid'?: string;
+  mousedown: boolean;
+  onMouseDown: () => void;
+  onMouseUp: () => void;
+  onMouseLeave: () => void;
 }
 
 const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {

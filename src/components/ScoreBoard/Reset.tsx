@@ -1,5 +1,7 @@
 import React, { FC, memo, useState } from 'react';
 import styled from '@emotion/styled';
+import { useMouseDown } from '@/hooks/useMouseDown';
+
 
 export interface ResetProps {
   /**
@@ -9,13 +11,13 @@ export interface ResetProps {
 }
 
 export const Reset: FC<ResetProps> = memo(({onReset}) => {
-	const [mouseDown, setMouseDown] = useState(false);
+  const [mouseDown, onMouseDown, onMouseUp] = useMouseDown();
   return (
     <Button
-			onMouseDown={() => {setMouseDown(true)}}
-			onMouseUp={() => {setMouseDown(false)}}
-			onMouseLeave={() => {setMouseDown(false)}}
-			onClick={(() => {onReset()})}
+			onMouseDown={onMouseDown}
+			onMouseUp={onMouseUp}
+			onMouseLeave={onMouseUp}
+			onClick={onReset}
     >
       {mouseDown ? '😯' : '🙂'}
     </Button>
