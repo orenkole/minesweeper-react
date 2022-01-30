@@ -87,12 +87,11 @@ export interface CellProps {
   onContextMenu: (coords: Coords) => void;
 }
 
+export const checkCellIsActive = (cell: CellType): boolean => 
+  [CellState.hidden, CellState.flag, CellState.weakFlag].includes(cell);
+
 export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
-  const isActiveCell = [
-    CellState.hidden,
-    CellState.flag,
-    CellState.weakFlag,
-  ].includes(children);
+  const isActiveCell = checkCellIsActive(children);
 
   const onClick = () => {
     if(isActiveCell) {
@@ -100,11 +99,11 @@ export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
     }
   }
 
-  const onContextMenu = (elem: React.MouseEvent<HTMLElement>) => {
+  const onContextMenu = (event: React.MouseEvent) => {
     /**
      * Prevent context menu by default
      */
-    elem.preventDefault();
+    event.preventDefault();
     if(isActiveCell) {
       rest.onContextMenu(coords);
     }
@@ -113,6 +112,7 @@ export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
   const props = {
     onClick,
     onContextMenu,
+    'data-testid': `${children}_${coords}`,
   };
 
   return <ComponentsMap {...props}>{children}</ComponentsMap>
@@ -122,6 +122,7 @@ interface ComponentsMapProps {
   children: CellType;
   onClick: (elem: React.MouseEvent<HTMLElement>) => void;
   onContextMenu: (elem: React.MouseEvent<HTMLElement>) => void;
+  'data-testid'?: string;
 }
 
 const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {
@@ -149,6 +150,6 @@ const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {
         </ClosedFrame>
       )
     default:
-      return <RevealedFrame>{children}</RevealedFrame>
+      return <RevealedFrame {...rest}>{children}</RevealedFrame>
   }
 }
