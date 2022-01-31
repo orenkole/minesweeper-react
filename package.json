@@ -10,8 +10,8 @@
     "watch": "webpack --watch --mode=development",
     "start": "webpack serve --mode=development",
     "test": "jest",
-    "test:mutate": "stryker run",
     "storybook": "start-storybook -p 6006",
+    "test:mutate": "stryker run",
     "build-storybook": "build-storybook",
     "chromatic": "npx chromatic",
     "prepare": "husky install"
