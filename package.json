@@ -10,9 +10,10 @@
     "watch": "webpack --watch --mode=development",
     "start": "webpack serve --mode=development",
     "test": "jest",
+    "test:mutate": "stryker run",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "chromatic": "npx chromatic --project-token=b9d564e326b1",
+    "chromatic": "npx chromatic",
     "prepare": "husky install"
   },
   "author": "",
