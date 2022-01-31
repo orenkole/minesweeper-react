@@ -53,8 +53,8 @@ const RevealedFrame = styled(ClosedFrame)`
 
 const Bomb = styled.div`
   border-radius: 50%;
-  width: 1vh;
-  height: 1vh;
+  width: 2vh;
+  height: 2vh;
   background-color: #333;
 `;
 
@@ -65,13 +65,13 @@ const BombFrame = styled(RevealedFrame)`
 const Flag = styled.div`
   width: 0px;
   height: 0px;
-  border-top: 0.5vh solid transparent;
-  border-bottom: 0.5vh solid transparent;
-  border-left: 0.5vh solid #ec433c;
+  border-top: 2vh solid transparent;
+  border-bottom: 2vh solid transparent;
+  border-left: 2vh solid #ec433c;
 `;
 
 const WeakFlag = styled(Flag)`
-  border-left: 0.5vh solid #f19996;
+  border-left: 2vh solid #f19996;
 `;
 
 export interface CellProps {
