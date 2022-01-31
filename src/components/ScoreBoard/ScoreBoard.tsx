@@ -20,6 +20,8 @@ export interface ScoreboardProps {
 	 */
 	onReset: () => void;
 
+	onChange: () => void;
+
 	/**
 	 * Bombs in the field
 	 */
