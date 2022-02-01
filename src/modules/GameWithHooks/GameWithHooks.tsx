@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useMemo, useState} from "react";
 
 import { GameArea } from "@/components/Game/GameArea";
 import { CellState, Coords, emptyFieldGenerator, Field, fieldGenerator } from "@/helpers/Field";
@@ -15,7 +15,10 @@ export const GameWithHooks: FC = () => {
 
 	const [size, bombs] = GameSettings[level];
 
-	const gameField = fieldGenerator(size, bombs / (size * size));
+	const gameField = useMemo(
+		() => fieldGenerator(size, bombs / (size * size)),
+		[size, bombs]
+	);
 
 	const [playerField, setPlayerField] = useState<Field>(
 		emptyFieldGenerator(size, CellState.hidden)
