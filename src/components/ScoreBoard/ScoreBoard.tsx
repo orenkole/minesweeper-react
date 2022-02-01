@@ -21,7 +21,9 @@ export interface ScoreboardProps {
 	 */
 	onReset: () => void;
 
-	onChange: ({target: {value}}: {target: {value: LevelNames[number]}}) => void;
+	onChange: ({
+		target: {value},
+	}: React.ChangeEvent<HTMLSelectElement>) => void;
 
 	/**
 	 * Bombs in the field
@@ -35,11 +37,12 @@ export const ScoreBoard: FC<ScoreboardProps> = ({
   levels,
   mines,
   onReset,
+	onChange,
 }) => (
   <Wrapper>
     <Counter>{time}</Counter>
     <div>
-      <Level>
+      <Level onChange={onChange}>
         {levels}
       </Level>
       <Reset onReset={onReset} />

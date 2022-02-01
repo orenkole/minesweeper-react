@@ -17,7 +17,7 @@ export interface LevelProps {
 }
 
 export const Level: FC<LevelProps> = memo(({ children, value, onChange }) => (
-  <Select onChange={onChange} value={value}>
+  <Select onChange={onChange} value={value} role='combobox'>
     {children.map((item: string) => (
       <Option key={item} value={item}>
         {item}
