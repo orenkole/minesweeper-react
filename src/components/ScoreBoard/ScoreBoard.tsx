@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { Counter } from "./Counter.stories";
 import { Reset } from "./Reset";
 import { Level } from "./Level";
+import { GameLevels, LevelNames } from "@/modules/GameSettings";
 
 export interface ScoreboardProps {
 	/**
@@ -13,19 +14,20 @@ export interface ScoreboardProps {
 	/**
 	 * Possible game scenarios
 	 */
-	levels: string[];
+	levels: typeof GameLevels;
 
 	/**
 	 * Action handler when the GameReset butoon is clicked
 	 */
 	onReset: () => void;
 
-	onChange: () => void;
+	onChange: ({target: {value}}: {target: {value: LevelNames[number]}}) => void;
 
 	/**
 	 * Bombs in the field
 	 */
 	mines: string;
+	defaultLevel: string;
 }
 
 export const ScoreBoard: FC<ScoreboardProps> = ({
