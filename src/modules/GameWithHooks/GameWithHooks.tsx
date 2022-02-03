@@ -15,9 +15,8 @@ export const GameWithHooks: FC = () => {
 
 	const [size, bombs] = GameSettings[level];
 
-	const gameField = useMemo(
-		() => fieldGenerator(size, bombs / (size * size)),
-		[size, bombs]
+	const [gameField, setGameField] = useState<Field>(
+		fieldGenerator(size, bombs / (size * size))
 	);
 
 	const [playerField, setPlayerField] = useState<Field>(
@@ -29,14 +28,22 @@ export const GameWithHooks: FC = () => {
 		setPlayerField([...newPlayerField]);
 	}
 
+	const onResetHandler = ([size, bombs]: [number, number]) => {
+		const newGameField = fieldGenerator(size, bombs / (size * size))
+		const newPlayerField = emptyFieldGenerator(size, CellState.hidden);
+		setGameField([...newGameField])
+		setPlayerField([...newPlayerField])
+	}
+
 	const onChangeLevel = ({
 		target: {value: level},
 	}: React.ChangeEvent<HTMLSelectElement>) => {
 		setLevel(level as LevelNames);
-		const [size, bombs] = GameSettings[level];
-		const newPlayerField = emptyFieldGenerator(size, CellState.hidden);
-		setPlayerField([...newPlayerField]);
+		const newSettings = GameSettings[level];
+		onResetHandler(newSettings)
 	}
+
+	const onReset = () => onResetHandler([size, bombs]);
 
 	return (
 		<Wrapper>
@@ -46,7 +53,7 @@ export const GameWithHooks: FC = () => {
 					time="0"
 					mines="10"
 					levels={GameLevels}
-					onReset={() => null}
+					onReset={onReset}
 					onChange={onChangeLevel}
 					defaultLevel={level}
 				/>
