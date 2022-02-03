@@ -13,6 +13,10 @@ import { openCell } from "@/helpers/openCell";
 export const GameWithHooks: FC = () => {
 	const [level, setLevel] = useState<LevelNames>('beginner');
 
+	const [isGameOver, setIsGameOver] = useState(false);
+
+	const [isWin, setIsWin] = useState(false); 
+
 	const [size, bombs] = GameSettings[level];
 
 	const [gameField, setGameField] = useState<Field>(
@@ -24,8 +28,14 @@ export const GameWithHooks: FC = () => {
 	)
 
 	const onClick = (coords: Coords) => {
-		const newPlayerField = openCell(coords, playerField, gameField);
-		setPlayerField([...newPlayerField]);
+		try {
+			const newPlayerField = openCell(coords, playerField, gameField);
+			setPlayerField([...newPlayerField]);
+		} catch (err) {
+			// on loose we reveal all field
+			setPlayerField([...gameField])
+			setIsGameOver(true);
+		}
 	}
 
 	const onResetHandler = ([size, bombs]: [number, number]) => {
@@ -33,6 +43,8 @@ export const GameWithHooks: FC = () => {
 		const newPlayerField = emptyFieldGenerator(size, CellState.hidden);
 		setGameField([...newGameField])
 		setPlayerField([...newPlayerField])
+		setIsGameOver(false);
+		setIsWin(false);
 	}
 
 	const onChangeLevel = ({
@@ -57,7 +69,7 @@ export const GameWithHooks: FC = () => {
 					onChange={onChangeLevel}
 					defaultLevel={level}
 				/>
-				<GameOver onClick={() => null} isWin={true} />
+				{isGameOver && <GameOver onClick={onReset} isWin={isWin} />}
 				<Grid
 					onClick={onClick}
 					onContextMenu={() => null}

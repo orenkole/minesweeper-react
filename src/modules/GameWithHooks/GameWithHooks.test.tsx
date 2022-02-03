@@ -59,4 +59,15 @@ describe("GameWithHooks test cases", () => {
 		userEvent.click(screen.getByRole('button'))
 		expect(screen.getAllByRole('cell', {name: String(h)})).toHaveLength(81);
 	})
+	describe("Game over behavior", () => {
+		it("Player loose the game and resets", () => {
+			render(<GameWithHooks />)
+			userEvent.click(screen.getByTestId('0,7'))
+			const gameLoosePopup = screen.getByText('🙁');
+			expect(gameLoosePopup).toBeInTheDocument();
+			userEvent.click(gameLoosePopup);
+			expect(screen.getAllByRole('cell', {name: String(h)})).toHaveLength(81);
+			expect(screen.queryByText('🙁')).not.toBeInTheDocument();
+		})
+	})
 })
