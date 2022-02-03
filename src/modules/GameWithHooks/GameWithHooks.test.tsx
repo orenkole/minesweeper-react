@@ -65,6 +65,7 @@ describe("GameWithHooks test cases", () => {
 			userEvent.click(screen.getByTestId('0,7'))
 			const gameLoosePopup = screen.getByText('🙁');
 			expect(gameLoosePopup).toBeInTheDocument();
+			// reset game
 			userEvent.click(gameLoosePopup);
 			expect(screen.getAllByRole('cell', {name: String(h)})).toHaveLength(81);
 			expect(screen.queryByText('🙁')).not.toBeInTheDocument();

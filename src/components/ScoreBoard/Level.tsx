@@ -1,5 +1,6 @@
 import React, { FC, ChangeEvent, memo } from 'react';
 import styled from '@emotion/styled';
+import { LevelNames } from '@/modules/GameSettings';
 
 export interface LevelProps {
   /**
@@ -13,7 +14,7 @@ export interface LevelProps {
   /**
    * Select new lvl handler
    */
-  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: ({target: {value: level}}: {target: {value: LevelNames}}) => void;
 }
 
 export const Level: FC<LevelProps> = memo(({ children, value, onChange }) => (

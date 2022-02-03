@@ -21,9 +21,7 @@ export interface ScoreboardProps {
 	 */
 	onReset: () => void;
 
-	onChange: ({
-		target: {value},
-	}: React.ChangeEvent<HTMLSelectElement>) => void;
+	onChange: ({target: {value: level}}: {target: {value: LevelNames}}) => void;
 
 	/**
 	 * Bombs in the field
