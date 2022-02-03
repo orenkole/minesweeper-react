@@ -13,8 +13,8 @@ const flatWithFilter = (field: Field, cond: number) => field.flat().filter((v) =
 
 describe("GameWithHooks test cases", () => {
 	it("Render game field by default", () => {})
-	it("Render game field by default", () => {})
-	it("Render game field by default", () => {})
-	it("Render game field by default", () => {})
-	it("Render game field by default", () => {})
+	it("Cell click works fine", () => {})
+	it("Reset handler works fine", () => {})
+	it("Change level work fine", () => {})
+	it("Game over reset the game state", () => {})
 })
