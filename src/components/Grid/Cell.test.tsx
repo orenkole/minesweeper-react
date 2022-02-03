@@ -14,7 +14,7 @@ describe("Cell component check", () => {
 				onContextMenu: jest.fn(),
 			}
 			render(<Cell {...props}>{cell}</Cell>)
-			const cellComp = screen.getByTestId(`${cell}_${coords}`);
+			const cellComp = screen.getByTestId(`${coords}`);
 			const contextMenuEvent = createEvent.contextMenu(cellComp);
 			fireEvent(cellComp, contextMenuEvent); // Note: return
 			expect(contextMenuEvent.defaultPrevented).toBe(true);
@@ -26,7 +26,7 @@ describe("Cell component check", () => {
 				onContextMenu: jest.fn(),
 			}
 			render(<Cell {...props}>{cell}</Cell>)
-			const cellComp = screen.getByTestId(`${cell}_${coords}`);
+			const cellComp = screen.getByTestId(`${coords}`);
 			fireEvent.click(cellComp);
 			fireEvent.contextMenu(cellComp);
 			if(checkCellIsActive(cell)) {

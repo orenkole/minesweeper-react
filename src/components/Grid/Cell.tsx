@@ -114,7 +114,7 @@ export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
   const props = {
     onClick,
     onContextMenu,
-    'data-testid': `${children}_${coords}`,
+    'data-testid': `${coords}`,
     mousedown,
     onMouseDown,
     onMouseUp,
@@ -146,9 +146,9 @@ const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {
 
   switch(children) {
     case CellState.empty:
-      return <RevealedFrame {...nonActiveCellProps} />
+      return <RevealedFrame {...nonActiveCellProps}>{children}</RevealedFrame>
     case CellState.hidden:
-      return <ClosedFrame {...rest} />
+      return <ClosedFrame {...rest}>{children}</ClosedFrame>
     case CellState.bomb:
       return (
         <BombFrame {...nonActiveCellProps} >
@@ -158,7 +158,7 @@ const ComponentsMap: FC<ComponentsMapProps> = ({children, ...rest}) => {
     case CellState.flag:
       return (
         <ClosedFrame {...rest} >
-          <Flag />
+          <Flag>{children}</Flag>
         </ClosedFrame>
       )
     case CellState.weakFlag:
