@@ -1,5 +1,6 @@
 import { checkItemInField, getNeigboursItems } from "./CellsManipulators";
-import { Cell, CellState, Coords, Field } from "./Field";
+import { CellState, Coords, Field } from "./Field";
+
 const {empty, hidden, bomb} = CellState;
 
 export const openCell = (

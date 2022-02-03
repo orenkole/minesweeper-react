@@ -7,7 +7,7 @@ jest.mock("@/helpers/Field")
 
 const [beginner, intermediate, expert] = GameLevels;
 
-const { empty: e, hidden: h, bomb: b } = CellState;
+const { empty: e, hidden: h, bomb: b, flag: f } = CellState;
 
 const flatWithFilter = (field: Field, cond: number) => field.flat().filter((v) => v === cond);
 
@@ -57,6 +57,13 @@ describe("GameWithHooks test cases", () => {
 			const {playerField: newPlayerField} = result.current;
 			expect(flatWithFilter(newPlayerField, e)).toHaveLength(18);
 		})
+	})
+	it('Context menu handler', () => {
+		const {result} = renderHook(useGame);
+		const {playerField, onContextMenu} = result.current;
+		act(() => onContextMenu([0, 0]))
+		const {playerField: newPlayerField} = result.current;
+		expect(flatWithFilter(newPlayerField, f)).toHaveLength(1)
 	})
 	it("Click to the non-empty cells area", () => {
 		// render(<GameWithHooks />)
