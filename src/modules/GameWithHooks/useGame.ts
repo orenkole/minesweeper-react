@@ -12,6 +12,7 @@ interface ReturnType {
 	isWin: boolean;
 	settings: [number, number];
 	playerField: Field;
+	gameField: Field;
 	onClick: (coords: Coords) => void;
 	onContextMenu: (coords: Coords) => void;
 	onChangeLevel: ({target: {value: level}}: {target: {value: LevelNames}}) => void;
@@ -24,6 +25,11 @@ export const useGame = (): ReturnType => {
 	const [isGameOver, setIsGameOver] = useState(false);
 
 	const [isWin, setIsWin] = useState(false); 
+
+	const setGameOver = (isSolved = false) => {
+		setIsGameOver(true);
+		setIsWin(isSolved);
+	}
 
 	const [size, bombs] = GameSettings[level];
 
@@ -39,22 +45,20 @@ export const useGame = (): ReturnType => {
 		try {
 			const [newPlayerField, isSolved, flagCounter] = openCell(coords, playerField, gameField);
 			if(isSolved) {
-				setIsWin(true);
-				setIsGameOver(true);
+				setGameOver(isSolved);
 			}
 			setPlayerField([...newPlayerField]);
 		} catch (err) {
 			// on loose we reveal all field
 			setPlayerField([...gameField])
-			setIsGameOver(true);
+			setGameOver(false);
 		}
 	}
 
 	const onContextMenu = (coords: Coords) => {
 		const [newPlayerField, isSolved, flagCounter] = setFlag(coords, playerField, gameField);
 		if(isSolved) {
-			setIsWin(true);
-			setIsGameOver(true);
+			setGameOver(isSolved);
 		}
 		setPlayerField([...newPlayerField])
 	}
@@ -84,6 +88,7 @@ export const useGame = (): ReturnType => {
 		isWin,
 		settings: [size, bombs],
 		playerField,
+		gameField,
 		onClick,
 		onContextMenu,
 		onChangeLevel,

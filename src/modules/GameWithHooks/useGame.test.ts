@@ -106,4 +106,19 @@ describe("GameWithHooks test cases", () => {
 			// expect(screen.queryByText('🙁')).not.toBeInTheDocument();
 		})
 	})
+	it("Player win the game", () => {
+		const {result} = renderHook(useGame);
+		const {gameField, onClick, onContextMenu} = result.current;
+		for(const y of gameField.keys()) {
+			for(const x of gameField[y].keys()) {
+				const gameCell = gameField[y][x];
+				act(() => {
+					gameCell === b ? onContextMenu([y, x]) : onClick([y, x]);
+				})
+			}
+		}
+		const {isGameOver, isWin} = result.current;
+		expect(isWin).toBe(true);
+		expect(isGameOver).toBe(true);
+	})
 })
