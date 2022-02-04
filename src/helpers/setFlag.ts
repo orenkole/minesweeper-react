@@ -1,4 +1,5 @@
 import { checkItemInField, getNeigboursItems } from "./CellsManipulators";
+import { detectSolvedPuzzle } from "./DetectSolvedPuzzle";
 import { CellState, Coords, Field } from "./Field";
 
 const {empty, hidden, bomb} = CellState;
@@ -7,7 +8,7 @@ export const setFlag = (
   coords: Coords,
   playerField: Field,
   gameField: Field
-): Field => {
+): [Field, boolean, number] => {
 	const [y, x] = coords;
 	const cell = playerField[y][x]
 	const {flag, weakFlag, hidden} = CellState;
@@ -23,5 +24,6 @@ export const setFlag = (
 			playerField[y][x] = flag;
 			break;
 	}
-  return playerField;
+	const [isSolved, flagCounter] = detectSolvedPuzzle(playerField, gameField);
+  return [playerField, isSolved, flagCounter];
 }
