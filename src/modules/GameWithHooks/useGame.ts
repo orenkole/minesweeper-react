@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import { CellState, Coords, emptyFieldGenerator, Field, fieldGenerator } from "@/helpers/Field";
 import { GameSettings, LevelNames } from "../GameSettings";
@@ -17,6 +17,7 @@ interface ReturnType {
 	onContextMenu: (coords: Coords) => void;
 	onChangeLevel: ({target: {value: level}}: {target: {value: LevelNames}}) => void;
 	onReset: () => void;
+	time: number;
 }
 
 export const useGame = (): ReturnType => {
@@ -25,6 +26,10 @@ export const useGame = (): ReturnType => {
 	const [isGameOver, setIsGameOver] = useState(false);
 
 	const [isWin, setIsWin] = useState(false); 
+
+	const [isGameStart, setIsGameStart] = useState(false);
+
+	const [time, setTime] = useState(0);
 
 	const setGameOver = (isSolved = false) => {
 		setIsGameOver(true);
@@ -41,7 +46,19 @@ export const useGame = (): ReturnType => {
 		emptyFieldGenerator(size, CellState.hidden)
 	)
 
+	useEffect(() => {
+		let interval: NodeJS.Timeout;
+		if(isGameStart) {
+			interval = setInterval(() => {setTime(time + 1)}, 1000);
+			if(isGameOver) {
+				clearInterval(interval);
+			}
+		}
+		return () => {clearInterval(interval)}
+	}, [isGameOver, isGameStart, time])
+
 	const onClick = (coords: Coords) => {
+		!isGameStart && setIsGameStart(true);
 		try {
 			const [newPlayerField, isSolved, flagCounter] = openCell(coords, playerField, gameField);
 			if(isSolved) {
@@ -56,6 +73,7 @@ export const useGame = (): ReturnType => {
 	}
 
 	const onContextMenu = (coords: Coords) => {
+		!isGameStart && setIsGameStart(true);
 		const [newPlayerField, isSolved, flagCounter] = setFlag(coords, playerField, gameField);
 		if(isSolved) {
 			setGameOver(isSolved);
@@ -70,6 +88,8 @@ export const useGame = (): ReturnType => {
 		setPlayerField([...newPlayerField])
 		setIsGameOver(false);
 		setIsWin(false);
+		setIsGameStart(false);
+		setTime(0);
 	}
 
 	const onChangeLevel = ({
@@ -93,5 +113,6 @@ export const useGame = (): ReturnType => {
 		onContextMenu,
 		onChangeLevel,
 		onReset,
+		time,
 	}
 }

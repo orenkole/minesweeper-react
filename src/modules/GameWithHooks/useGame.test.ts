@@ -121,4 +121,63 @@ describe("GameWithHooks test cases", () => {
 		expect(isWin).toBe(true);
 		expect(isGameOver).toBe(true);
 	})
+	describe("Scoreboard behavior - timer and bomb counter", () => {
+		it("Timer should start by click to a cell", () => {
+			jest.useFakeTimers();
+			const {result} = renderHook(useGame);
+			const timeMustPass = 5;
+			for (let i = 0; i < timeMustPass; i++) {
+				act(() => {
+					jest.advanceTimersByTime(1000);
+				})
+			}
+			// Timer shouldn't work before game has been startded
+			expect(result.current.time).toBe(0);
+			act(() => { result.current.onClick([0, 0]) })
+			for (let i = 0; i < timeMustPass; i++) {
+				act(() => {
+					jest.advanceTimersByTime(1000);
+				})
+			}
+			expect(result.current.time).toBe(timeMustPass);
+		})
+		it("TImer should start by mark a cell by a flag", () => {
+			const {result} = renderHook(useGame);
+			const timeMustPass = 5;
+			for (let i = 0; i < timeMustPass; i++) {
+				act(() => {
+					jest.advanceTimersByTime(1000);
+				})
+			}
+			// Timer shouldn't work before game has been startded
+			expect(result.current.time).toBe(0);
+			act(() => { result.current.onContextMenu([0, 0]) })
+			for (let i = 0; i < timeMustPass; i++) {
+				act(() => {
+					jest.advanceTimersByTime(1000);
+				})
+			}
+			expect(result.current.time).toBe(timeMustPass);
+		})
+		it("Time should reset value when onReset have been called", () => {
+			const {result} = renderHook(useGame);
+			const timeMustPass = 5;
+			for (let i = 0; i < timeMustPass; i++) {
+				act(() => {
+					jest.advanceTimersByTime(1000);
+				})
+			}
+			// Timer shouldn't work before game has been startded
+			expect(result.current.time).toBe(0);
+			act(() => { result.current.onContextMenu([0, 0]) })
+			for (let i = 0; i < timeMustPass; i++) {
+				act(() => {
+					jest.advanceTimersByTime(1000);
+				})
+			}
+			expect(result.current.time).toBe(timeMustPass);
+			act(result.current.onReset);
+			expect(result.current.time).toBe(0)
+		})
+	})
 })

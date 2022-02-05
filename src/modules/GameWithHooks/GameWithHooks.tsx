@@ -20,6 +20,7 @@ export const GameWithHooks: FC = () => {
 		onContextMenu,
 		onChangeLevel,
 		onReset,
+		time
 	} = useGame();
 
 	const [, bombs] = settings;
@@ -29,7 +30,7 @@ export const GameWithHooks: FC = () => {
 			<Top feature="Flag" firstAction="right click">Minesweeper</Top>
 			<GameArea>
 				<ScoreBoard
-					time="0"
+					time={String(time)}
 					mines={String(bombs)}
 					levels={GameLevels}
 					onReset={onReset}
