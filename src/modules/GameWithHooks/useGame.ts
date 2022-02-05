@@ -63,7 +63,7 @@ export const useGame = (): ReturnType => {
 	const onClick = (coords: Coords) => {
 		!isGameStart && setIsGameStart(true);
 		try {
-			const [newPlayerField, isSolved, flagCounter] = openCell(coords, playerField, gameField);
+			const [newPlayerField, isSolved] = openCell(coords, playerField, gameField);
 			if(isSolved) {
 				setGameOver(isSolved);
 			}
