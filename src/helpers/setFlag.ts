@@ -4,10 +4,22 @@ import { CellState, Coords, Field } from "./Field";
 
 const {empty, hidden, bomb} = CellState;
 
+/**
+ * Set flag to the cell
+ * @param {Coords} coords 
+ * @param {Field} playerField 
+ * @param {Field} gameField 
+ * @param {number} prevFlagCounter
+ * @param {number} bombs
+ * @returns 
+ */
+
 export const setFlag = (
   coords: Coords,
   playerField: Field,
-  gameField: Field
+  gameField: Field,
+	prevFlagCounter: number,
+	bombs: number,
 ): [Field, boolean, number] => {
 	const [y, x] = coords;
 	const cell = playerField[y][x]
@@ -21,7 +33,9 @@ export const setFlag = (
 			playerField[y][x] = hidden;
 			break;
 		case hidden: 
-			playerField[y][x] = flag;
+			if(prevFlagCounter < bombs) {
+				playerField[y][x] = flag;
+			}
 			break;
 	}
 	const [isSolved, flagCounter] = detectSolvedPuzzle(playerField, gameField);

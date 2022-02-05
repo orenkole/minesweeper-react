@@ -17,7 +17,7 @@ describe("Set flag action", () => {
 				[h, h, h],
 			]
 			
-			const [newPlayerField] = setFlag([0, 0], playerField, gameField);
+			const [newPlayerField] = setFlag([0, 0], playerField, gameField, 0, 3);
 			expect(newPlayerField).toStrictEqual(
 				[
 					[1, h, h],
@@ -38,7 +38,7 @@ describe("Set flag action", () => {
 				[h, h, h],
 			]
 
-			const [playerFieldAfterFirstClick] = setFlag([0, 0], playerField, gameField);
+			const [playerFieldAfterFirstClick] = setFlag([0, 0], playerField, gameField, 0, 3);
 			expect(playerFieldAfterFirstClick).toStrictEqual(
 				[
 					[f, h, h],
@@ -46,7 +46,7 @@ describe("Set flag action", () => {
 					[h, h, h],
 				]
 			)
-			const [playerFieldAfterSecondClick] = setFlag([0, 0], playerField, gameField);
+			const [playerFieldAfterSecondClick] = setFlag([0, 0], playerField, gameField, 0, 3);
 			expect(playerFieldAfterSecondClick).toStrictEqual(
 				[
 					[w, h, h],
@@ -54,7 +54,7 @@ describe("Set flag action", () => {
 					[h, h, h],
 				]
 			)
-			const [playerFieldAfterThirdClick] = setFlag([0, 0], playerField, gameField);
+			const [playerFieldAfterThirdClick] = setFlag([0, 0], playerField, gameField, 0, 3);
 			expect(playerFieldAfterThirdClick).toStrictEqual(
 				[
 					[h, h, h],
@@ -82,6 +82,8 @@ describe("Set flag action", () => {
           [1, 0, 0, 1, 9],
           [2, 1, 0, 1, 0],
         ],
+				0,
+				3,
       );
 
       expect(flagCounter).toBe(4);
@@ -95,4 +97,104 @@ describe("Set flag action", () => {
       ]);
     });
   });
+	describe("Restrict flagCounter by the number of bombs on the field", () => {
+		it("Restriction on 3x3 field", () => {
+			const gameField: Field = [
+        [1, 2, 1],
+        [b, 2, b],
+        [1, 2, 1],
+      ];
+      const playerField: Field = [
+        [f, h, h],
+        [h, h, h],
+        [f, h, h],
+      ];
+
+      const [newPlayerField] = setFlag([1, 1], playerField, gameField, 2, 2);
+
+      expect(newPlayerField).toStrictEqual([
+        [f, h, h],
+        [h, h, h],
+        [f, h, h],
+      ]); 
+		})
+		it("Still can switch flag from hard to weak", () => {
+			const gameField: Field = [
+        [1, 2, 1],
+        [b, 2, b],
+        [1, 2, 1],
+      ];
+      const playerField: Field = [
+        [f, h, h],
+        [h, h, h],
+        [f, h, h],
+      ];
+
+      const [newPlayerField] = setFlag([0, 0], playerField, gameField, 2, 2);
+
+      expect(newPlayerField).toStrictEqual([
+        [w, h, h],
+        [h, h, h],
+        [f, h, h],
+      ]);
+		})
+		it("Can't add new flag even if flags are weak", () => {
+			const gameField: Field = [
+        [1, 2, 1],
+        [b, 2, b],
+        [1, 2, 1],
+      ];
+      const playerField: Field = [
+        [w, h, h],
+        [h, h, h],
+        [w, h, h],
+      ];
+
+      const [newPlayerField] = setFlag([1, 1], playerField, gameField, 2, 2);
+
+      expect(newPlayerField).toStrictEqual([
+        [w, h, h],
+        [h, h, h],
+        [w, h, h],
+      ]);
+		})
+		it("Can set the new flag after drop prev", () => {
+			const gameField: Field = [
+        [1, 2, 1],
+        [b, 2, b],
+        [1, 2, 1],
+      ];
+      const playerField: Field = [
+        [f, h, h],
+        [h, h, h],
+        [f, h, h],
+      ];
+
+      const result = setFlag([0, 0], playerField, gameField, 2, 2);
+
+      const result1 = setFlag([0, 0], result[0], gameField, 2, 2);
+
+      expect(result1).toStrictEqual([
+        [
+          [h, h, h],
+          [h, h, h],
+          [f, h, h],
+        ],
+        false,
+        1,
+      ]);
+
+      const result2 = setFlag([0, 0], result1[0], gameField, 1, 2);
+
+      expect(result2).toStrictEqual([
+        [
+          [f, h, h],
+          [h, h, h],
+          [f, h, h],
+        ],
+        false,
+        2,
+      ]);
+		})
+	})
 })
