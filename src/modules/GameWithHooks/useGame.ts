@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 import { CellState, Coords, emptyFieldGenerator, Field, fieldGenerator } from "@/core/Field";
-import { GameSettings, LevelNames } from "../GameSettings";
+import { LevelNames } from "../GameSettings";
 import { openCell } from "@/core/openCell";
 import { setFlag } from "@/core/setFlag";
 import { useTime } from "./useTime";
@@ -91,8 +91,7 @@ export const useGame = (): ReturnType => {
 	const onChangeLevel = ({
 		target: {value: level},
 	}: {target: {value: LevelNames}}) => {
-		setLevel(level as LevelNames);
-		const newSettings = GameSettings[level];
+		const newSettings = setLevel(level);
 		onResetHandler(newSettings)
 	}
 
