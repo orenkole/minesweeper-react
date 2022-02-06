@@ -5,7 +5,8 @@ import { GameSettings, LevelNames } from "../GameSettings";
 import { openCell } from "@/core/openCell";
 import { setFlag } from "@/core/setFlag";
 import { useTime } from "./useTime";
-
+import { useStatus } from "./useStatus";
+import { useSettings } from "./useSettings";
 
 interface ReturnType {
 	level: LevelNames;
@@ -24,24 +25,25 @@ interface ReturnType {
 }
 
 export const useGame = (): ReturnType => {
-	const [level, setLevel] = useState<LevelNames>('beginner');
+	const {
+		settings: [size, bombs],
+		level,
+		setLevel,
+	} = useSettings();
 
-	const [isGameOver, setIsGameOver] = useState(false);
-
-	const [isWin, setIsWin] = useState(false); 
-
-	const [isGameStart, setIsGameStart] = useState(false);
+	const {
+		isGameStart,
+		isWin,
+		isGameOver,
+		setNewGame,
+		setInProgress,
+		setGameWin,
+		setGameLoose,
+	} = useStatus();
 
 	const [time, resetTime] = useTime(isGameStart, isGameOver);
 
 	const [flagCounter, setFlagCounter] = useState(0);
-
-	const setGameOver = (isSolved = false) => {
-		setIsGameOver(true);
-		setIsWin(isSolved);
-	}
-
-	const [size, bombs] = GameSettings[level];
 
 	const [gameField, setGameField] = useState<Field>(
 		fieldGenerator(size, bombs / (size * size))
@@ -52,27 +54,27 @@ export const useGame = (): ReturnType => {
 	)
 
 	const onClick = (coords: Coords) => {
-		!isGameStart && setIsGameStart(true);
+		!isGameStart && setInProgress();
 		try {
 			const [newPlayerField, isSolved] = openCell(coords, playerField, gameField);
 			if(isSolved) {
-				setGameOver(isSolved);
+				setGameWin();
 			}
 			setPlayerField([...newPlayerField]);
 		} catch (err) {
 			// on loose we reveal all field
 			setPlayerField([...gameField])
-			setGameOver(false);
+			setGameLoose();
 		}
 	}
 
 	const onContextMenu = (coords: Coords) => {
-		!isGameStart && setIsGameStart(true);
+		!isGameStart && setInProgress();
 		const [newPlayerField, isSolved, newFlagCounter] = 
 			setFlag(coords, playerField, gameField, flagCounter, bombs);
 		setFlagCounter(newFlagCounter)
 		if(isSolved) {
-			setGameOver(isSolved);
+			setGameWin();
 		}
 		setPlayerField([...newPlayerField])
 	}
@@ -82,9 +84,7 @@ export const useGame = (): ReturnType => {
 		const newPlayerField = emptyFieldGenerator(size, CellState.hidden);
 		setGameField([...newGameField])
 		setPlayerField([...newPlayerField])
-		setIsGameOver(false);
-		setIsWin(false);
-		setIsGameStart(false);
+		setNewGame();
 		resetTime();
 	}
 

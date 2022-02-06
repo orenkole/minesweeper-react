@@ -1,4 +1,4 @@
-export const GameLevels = ['beginner', 'intermediate', 'expert'];
+export const GameLevels = ['beginner', 'intermediate', 'expert'] as const;
 
 export type LevelNames = typeof GameLevels[number];
 
