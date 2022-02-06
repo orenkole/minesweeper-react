@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import styled from "@emotion/styled"
-import { Cell as CellType, CellState, Coords } from "@/helpers/Field";
-import { useMouseDown } from "@/hooks/useMouseDown";
+import { Cell as CellType, CellState, Coords } from "@/core/Field";
+import { useMouseDown } from "@/components/hooks/useMouseDown";
 
 const transparent = 'rgba(0,0,0,0)';
 const colors: { [key in CellType]: string } = {

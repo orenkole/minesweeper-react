@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {render, screen, fireEvent, createEvent} from "@testing-library/react";
-import { CellState, Coords } from "@/helpers/Field";
+import { CellState, Coords } from "@/core/Field";
 import { Cell, checkCellIsActive } from "./Cell";
 
 describe("Cell component check", () => {

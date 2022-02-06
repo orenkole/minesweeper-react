@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
-import { Coords, Field } from "@/helpers/Field";
+import { Coords, Field } from "@/core/Field";
 import { Cell } from "./Cell";
 
 export interface GridProps {

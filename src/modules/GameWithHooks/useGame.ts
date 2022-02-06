@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 
-import { CellState, Coords, emptyFieldGenerator, Field, fieldGenerator } from "@/helpers/Field";
+import { CellState, Coords, emptyFieldGenerator, Field, fieldGenerator } from "@/core/Field";
 import { GameSettings, LevelNames } from "../GameSettings";
-import { openCell } from "@/helpers/openCell";
-import { setFlag } from "@/helpers/setFlag";
+import { openCell } from "@/core/openCell";
+import { setFlag } from "@/core/setFlag";
+import { useTime } from "./useTime";
 
 
 interface ReturnType {
@@ -31,7 +32,7 @@ export const useGame = (): ReturnType => {
 
 	const [isGameStart, setIsGameStart] = useState(false);
 
-	const [time, setTime] = useState(0);
+	const [time, resetTime] = useTime(isGameStart, isGameOver);
 
 	const [flagCounter, setFlagCounter] = useState(0);
 
@@ -49,17 +50,6 @@ export const useGame = (): ReturnType => {
 	const [playerField, setPlayerField] = useState<Field>(
 		emptyFieldGenerator(size, CellState.hidden)
 	)
-
-	useEffect(() => {
-		let interval: NodeJS.Timeout;
-		if(isGameStart) {
-			interval = setInterval(() => {setTime(time + 1)}, 1000);
-			if(isGameOver) {
-				clearInterval(interval);
-			}
-		}
-		return () => {clearInterval(interval)}
-	}, [isGameOver, isGameStart, time])
 
 	const onClick = (coords: Coords) => {
 		!isGameStart && setIsGameStart(true);
@@ -95,7 +85,7 @@ export const useGame = (): ReturnType => {
 		setIsGameOver(false);
 		setIsWin(false);
 		setIsGameStart(false);
-		setTime(0);
+		resetTime();
 	}
 
 	const onChangeLevel = ({

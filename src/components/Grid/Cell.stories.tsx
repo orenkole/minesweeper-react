@@ -2,7 +2,7 @@ import React from 'react';
 import { Story, Meta } from '@storybook/react';
 
 import { Cell, CellProps } from './Cell';
-import { CellState } from '@/helpers/Field';
+import { CellState } from '@/core/Field';
 
 export default {
   title: 'Grid/Cell',

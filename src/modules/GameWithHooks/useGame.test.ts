@@ -1,9 +1,9 @@
-import { CellState, Field } from "@/helpers/Field";
+import { CellState, Field } from "@/core/Field";
 import {renderHook, act} from "@testing-library/react-hooks";
 import { GameLevels, GameSettings } from "../GameSettings";
 import {useGame} from "./useGame";
 
-jest.mock("@/helpers/Field")
+jest.mock("@/core/Field")
 
 const [beginner, intermediate, expert] = GameLevels;
 
