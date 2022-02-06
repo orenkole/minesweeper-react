@@ -19,6 +19,7 @@ interface ReturnType {
 	onReset: () => void;
 	time: number;
 	flagCounter: number;
+	isGameStart : boolean;
 }
 
 export const useGame = (): ReturnType => {
@@ -120,5 +121,6 @@ export const useGame = (): ReturnType => {
 		onReset,
 		time,
 		flagCounter,
+		isGameStart,
 	}
 }

@@ -93,6 +93,37 @@ describe("GameWithHooks test cases", () => {
 		// expect(screen.getAllByRole('cell', {name: String(e)})).toHaveLength(18);
 		// userEvent.click(screen.getByRole('button'))
 		// expect(screen.getAllByRole('cell', {name: String(h)})).toHaveLength(81);
+		
+		const { result } = renderHook(useGame);
+      // const { playerField, onClick, onReset, onContextMenu } = result.current;
+
+      expect(result.current.playerField).toHaveLength(9);
+
+      act(() => result.current.onClick([0, 8]));
+      act(() => result.current.onContextMenu([8, 8]));
+
+      expect(flatWithFilter(result.current.playerField, 1)).toHaveLength(1);
+
+      act(() => result.current.onClick([0, 0]));
+
+      expect(flatWithFilter(result.current.playerField, e)).toHaveLength(18);
+
+      act(result.current.onReset);
+
+      const {
+        playerField: finalPlayerField,
+        isWin,
+        isGameStart,
+        isGameOver,
+        gameField,
+        flagCounter,
+      } = result.current;
+
+      expect(isWin).toBe(false);
+      expect(isGameOver).toBe(false);
+      expect(isGameStart).toBe(false);
+      expect(flatWithFilter(finalPlayerField, h)).toHaveLength(81);
+      expect(flatWithFilter(gameField, b)).toHaveLength(10);
 	})
 	describe("Game over behavior", () => {
 		it("Player loose the game and resets", () => {
@@ -106,21 +137,60 @@ describe("GameWithHooks test cases", () => {
 			// expect(screen.queryByText('🙁')).not.toBeInTheDocument();
 		})
 	})
-	it("Player win the game", () => {
-		const {result} = renderHook(useGame);
-		const {gameField, onClick, onContextMenu} = result.current;
-		for(const y of gameField.keys()) {
-			for(const x of gameField[y].keys()) {
+	it('Player win a game when open the last cell', () => {
+		const { result } = renderHook(useGame);
+
+		const { gameField } = result.current;
+
+		for (const y of gameField.keys()) {
+			for (const x of gameField[y].keys()) {
 				const gameCell = gameField[y][x];
 				act(() => {
-					gameCell === b ? onContextMenu([y, x]) : onClick([y, x]);
-				})
+					gameCell === b && result.current.onContextMenu([y, x]);
+				});
 			}
 		}
-		const {isGameOver, isWin} = result.current;
+
+		for (const y of gameField.keys()) {
+			for (const x of gameField[y].keys()) {
+				const gameCell = gameField[y][x];
+				act(() => {
+					gameCell < b && result.current.onClick([y, x]);
+				});
+			}
+		}
+
+		expect(result.current.isWin).toBe(true);
+		expect(result.current.isGameOver).toBe(true);
+	});
+	it('Player win the game when setup flag to the last cell', () => {
+		const { result } = renderHook(useGame);
+
+		const { gameField } = result.current;
+
+		for (const y of gameField.keys()) {
+			for (const x of gameField[y].keys()) {
+				const gameCell = gameField[y][x];
+				act(() => {
+					gameCell !== b && result.current.onClick([y, x]);
+				});
+			}
+		}
+
+		for (const y of gameField.keys()) {
+			for (const x of gameField[y].keys()) {
+				const gameCell = gameField[y][x];
+				act(() => {
+					gameCell === b && result.current.onContextMenu([y, x]);
+				});
+			}
+		}
+
+		const { isGameOver, isWin } = result.current;
+
 		expect(isWin).toBe(true);
 		expect(isGameOver).toBe(true);
-	})
+	});
 	describe("Scoreboard behavior - timer and bomb counter", () => {
 		it("Timer should start by click to a cell", () => {
 			jest.useFakeTimers();
