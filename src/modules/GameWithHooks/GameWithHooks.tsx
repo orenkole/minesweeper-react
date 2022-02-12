@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useCallback} from "react";
 
 import { GameArea } from "@/components/Game/GameArea";
 import { ScoreBoard } from "@/components/ScoreBoard";
@@ -25,6 +25,7 @@ export const GameWithHooks: FC = () => {
 	} = useGame();
 
 	const [, bombs] = settings;
+	const onChangeLevelHandler = useCallback(onChangeLevel, [])
 	
 	return (
 		<Wrapper>
@@ -35,7 +36,7 @@ export const GameWithHooks: FC = () => {
 					mines={String(bombs - flagCounter)}
 					levels={GameLevels}
 					onReset={onReset}
-					onChange={onChangeLevel}
+					onChange={onChangeLevelHandler}
 					defaultLevel={level}
 				/>
 				{isGameOver && <GameOver onClick={onReset} isWin={isWin} />}
