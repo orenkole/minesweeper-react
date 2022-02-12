@@ -1,4 +1,4 @@
-import {useState, useDebugValue} from "react";
+import {useState, useDebugValue, useCallback} from "react";
 
 export type SetMouseDownStatus = () => void;
 export type SetMouseUpStatus = () => void;
@@ -12,7 +12,11 @@ export const useMouseDown = (): [
 
 	useDebugValue(`mouseDown: ${mouseDown}`)
 
-	const onMouseDown = () => setMouseDown(true);
+	const onMouseDown = useCallback(
+		() => setMouseDown(true),
+		// Stryker disable next-line ArrayDeclaration
+		[]
+	)
 	const onMouseUp = () => setMouseDown(false);
 	return [mouseDown, onMouseDown, onMouseUp];
 }

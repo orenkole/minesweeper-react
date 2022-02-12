@@ -66,7 +66,10 @@ export const useGame = (): ReturnType => {
 			setPlayerField([...gameField])
 			setGameLoose();
 		}
-	}, [isGameStart, isGameOver, isWin, level, flagCounter])
+	}, 
+	// Stryker disable next-line ArrayDeclaration
+	[isGameStart, isGameOver, isWin, level, flagCounter]
+)
 
 	const onContextMenu = useCallback((coords: Coords) => {
 		!isGameStart && setInProgress();
@@ -77,7 +80,9 @@ export const useGame = (): ReturnType => {
 			setGameWin();
 		}
 		setPlayerField([...newPlayerField])
-	}, [isGameStart, isGameOver, isWin, level, flagCounter])
+	}, 
+	// Stryker disable next-line ArrayDeclaration
+	[isGameStart, isGameOver, isWin, level, flagCounter])
 
 	const onResetHandler = ([size, bombs]: [number, number]) => {
 		const newGameField = fieldGenerator(size, bombs / (size * size))
@@ -93,7 +98,10 @@ export const useGame = (): ReturnType => {
 	}: {target: {value: LevelNames}}) => {
 		const newSettings = setLevel(level);
 		onResetHandler(newSettings)
-	}, [])
+	},
+	// Stryker disable next-line ArrayDeclaration
+	[]
+)
 
 	const onReset = useCallback(() => onResetHandler([size, bombs]), [size, bombs]);
 

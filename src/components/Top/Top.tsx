@@ -13,6 +13,7 @@ export const Top: FC<TopComponentType> = memo((props) => {
 	</Header>
 })
 
+// Stryker disable next-line ArrayDeclaration
 Top.displayName = 'Top';
 
 const Header = styled.header`

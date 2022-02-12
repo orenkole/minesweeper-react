@@ -40,8 +40,10 @@ export const fieldGenerator = (size: number, probability: number): Field => {
   let restCellsWithBombs = unprocessedCells * probability;
 
   const result: Field = emptyFieldGenerator(size);
+  // Stryker disable next-line EqualityOperator
   for(let y = 0; y <= size - 1; y++) {
     for(let x = 0; x <= size - 1; x++) {
+        // Stryker disable next-line EqualityOperator
       if(restCellsWithBombs / unprocessedCells > Math.random()) {
         result[y][x] = CellState.bomb;
         incrementNeighbours([y, x], result);

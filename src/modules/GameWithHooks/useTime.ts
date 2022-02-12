@@ -12,7 +12,9 @@ export const useTime = (isGameStart: boolean, isGameOver: boolean): [number, () 
 			}
 		}
 		return () => {clearInterval(interval)}
-	}, [isGameOver, isGameStart, time])
+	},
+	// Stryker disable next-line ArrayDeclaration
+	[isGameOver, isGameStart, time])
 
 	const onReset = () => setTime(0);
 

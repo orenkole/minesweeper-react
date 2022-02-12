@@ -25,7 +25,10 @@ export const GameWithHooks: FC = () => {
 	} = useGame();
 
 	const [, bombs] = settings;
-	const onChangeLevelHandler = useCallback(onChangeLevel, [])
+	const onChangeLevelHandler = useCallback(onChangeLevel,
+	// Stryker disable next-line ArrayDeclaration
+	[]
+)
 	
 	return (
 		<Wrapper>
