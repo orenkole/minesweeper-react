@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, memo} from "react";
 import styled from "@emotion/styled"
 import { Cell as CellType, CellState, Coords } from "@/core/Field";
 import { useMouseDown } from "@/components/hooks/useMouseDown";
@@ -96,34 +96,51 @@ export interface CellProps {
 export const checkCellIsActive = (cell: CellType): boolean => 
   [CellState.hidden, CellState.flag, CellState.weakFlag].includes(cell);
 
-export const Cell: FC<CellProps> = ({children, coords, ...rest}) => {
-  const [mousedown, onMouseDown, onMouseUp] = useMouseDown();
-
-  const onClick = () => rest.onClick(coords);
-
-  const onContextMenu = (event: React.MouseEvent) => {
-    /**
-     * Prevent context menu by default
-     */
-    event.preventDefault();
-    if(checkCellIsActive(children)) {
-      rest.onContextMenu(coords);
-    }
-  }
-
-  const props = {
-    onClick,
-    onContextMenu,
-    'data-testid': `${coords}`,
-    mousedown,
-    onMouseDown,
-    onMouseUp,
-    onMouseLeave: onMouseUp,
-    role: 'cell',
-  };
-
-  return <ComponentsMap {...props}>{children}</ComponentsMap>
+export const areEqual = (
+  prevProps: CellProps,
+  nextProps: CellProps
+): boolean => {
+  const areEqualCoords =
+    prevProps.coords.filter((coord, idx) => nextProps.coords[idx] !== coord).length === 0;
+  return (
+    areEqualCoords
+    && prevProps.children === nextProps.children
+    && prevProps.onClick === nextProps.onClick
+    && prevProps.onContextMenu === nextProps.onContextMenu
+  );
 }
+
+export const Cell: FC<CellProps> = memo(
+  ({children, coords, ...rest}) => {
+    const [mousedown, onMouseDown, onMouseUp] = useMouseDown();
+  
+    const onClick = () => rest.onClick(coords);
+  
+    const onContextMenu = (event: React.MouseEvent) => {
+      /**
+       * Prevent context menu by default
+       */
+      event.preventDefault();
+      if(checkCellIsActive(children)) {
+        rest.onContextMenu(coords);
+      }
+    }
+  
+    const props = {
+      onClick,
+      onContextMenu,
+      'data-testid': `${coords}`,
+      mousedown,
+      onMouseDown,
+      onMouseUp,
+      onMouseLeave: onMouseUp,
+      role: 'cell',
+    };
+  
+    return <ComponentsMap {...props}>{children}</ComponentsMap>
+  },
+  areEqual
+)
 
 interface ComponentsMapProps {
   children: CellType;

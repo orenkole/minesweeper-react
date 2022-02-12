@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 
 import { CellState, Coords, emptyFieldGenerator, Field, fieldGenerator } from "@/core/Field";
 import { LevelNames } from "../GameSettings";
@@ -53,7 +53,7 @@ export const useGame = (): ReturnType => {
 		emptyFieldGenerator(size, CellState.hidden)
 	)
 
-	const onClick = (coords: Coords) => {
+	const onClick = useCallback((coords: Coords) => {
 		!isGameStart && setInProgress();
 		try {
 			const [newPlayerField, isSolved] = openCell(coords, playerField, gameField);
@@ -66,9 +66,9 @@ export const useGame = (): ReturnType => {
 			setPlayerField([...gameField])
 			setGameLoose();
 		}
-	}
+	}, [isGameStart, isGameOver, isWin, level, flagCounter])
 
-	const onContextMenu = (coords: Coords) => {
+	const onContextMenu = useCallback((coords: Coords) => {
 		!isGameStart && setInProgress();
 		const [newPlayerField, isSolved, newFlagCounter] = 
 			setFlag(coords, playerField, gameField, flagCounter, bombs);
@@ -77,7 +77,7 @@ export const useGame = (): ReturnType => {
 			setGameWin();
 		}
 		setPlayerField([...newPlayerField])
-	}
+	}, [isGameStart, isGameOver, isWin, level, flagCounter])
 
 	const onResetHandler = ([size, bombs]: [number, number]) => {
 		const newGameField = fieldGenerator(size, bombs / (size * size))
@@ -88,14 +88,14 @@ export const useGame = (): ReturnType => {
 		resetTime();
 	}
 
-	const onChangeLevel = ({
+	const onChangeLevel = useCallback(({
 		target: {value: level},
 	}: {target: {value: LevelNames}}) => {
 		const newSettings = setLevel(level);
 		onResetHandler(newSettings)
-	}
+	}, [])
 
-	const onReset = () => onResetHandler([size, bombs]);
+	const onReset = useCallback(() => onResetHandler([size, bombs]), [size, bombs]);
 
 	return {
 		level,
