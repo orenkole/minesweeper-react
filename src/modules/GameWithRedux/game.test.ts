@@ -1,7 +1,7 @@
 import { CellState, Field } from '@/core/Field';
 import { GameSettings } from '@/modules/GameSettings';
 
-import { openCell, reducer, State } from './game';
+import { actions, reducer, State } from './game';
 const { empty: e, hidden: h, bomb: b, flag: f, weakFlag: w } = CellState;
 
 describe('Game reducer', () => {
@@ -28,7 +28,7 @@ describe('Game reducer', () => {
 
   describe('Check action openCell', () => {
     it('Check openCell to cell with a number', () => {
-      expect(reducer(baseInitialState, openCell([1, 1]))).toEqual({
+      expect(reducer(baseInitialState, actions.openCell([1, 1]))).toEqual({
         ...baseInitialState,
         isGameStarted: true,
         playerField: [
@@ -38,7 +38,7 @@ describe('Game reducer', () => {
       });
     });
 		it('Check openCell to cell with a bomb', () => {
-      expect(reducer(baseInitialState, openCell([0, 0]))).toEqual({
+      expect(reducer(baseInitialState, actions.openCell([0, 0]))).toEqual({
         ...baseInitialState,
         isGameStarted: false,
         isWin: false,
@@ -58,7 +58,7 @@ describe('Game reducer', () => {
             isGameStarted: true,
             playerField: playerFieldWithFlag,
           },
-          openCell([1, 1])
+          actions.openCell([1, 1])
         )
       ).toEqual({
         ...baseInitialState,
@@ -66,5 +66,76 @@ describe('Game reducer', () => {
         playerField: playerFieldWithFlag,
       });
 		});
+  });
+
+	describe('Check action setFlag', () => {
+    it('Check setFlag', () => {
+      const state1 = reducer(baseInitialState, actions.setFlag([1, 1]));
+
+      expect(state1).toEqual({
+        ...baseInitialState,
+        isGameStarted: true,
+        flagCounter: 1,
+        playerField: [
+          [h, h],
+          [h, f],
+        ],
+      });
+
+      const state2 = reducer(state1, actions.setFlag([1, 1]));
+
+      expect(state2).toEqual({
+        ...baseInitialState,
+        isGameStarted: true,
+        flagCounter: 1,
+        playerField: [
+          [h, h],
+          [h, w],
+        ],
+      });
+
+      expect(reducer(state2, actions.setFlag([1, 1]))).toEqual({
+        ...baseInitialState,
+        isGameStarted: true,
+      });
+    });
+  });
+	describe('Win flow', () => {
+    it('Setup flag on the last step', () => {
+      const state1 = reducer(baseInitialState, actions.openCell([1, 0]));
+      const state2 = reducer(state1, actions.openCell([0, 1]));
+      const state3 = reducer(state2, actions.openCell([1, 1]));
+      const state4 = reducer(state3, actions.setFlag([0, 0]));
+
+      expect(state4).toEqual({
+        ...baseInitialState,
+        isGameStarted: false,
+        isWin: true,
+        isGameOver: true,
+        flagCounter: 1,
+        playerField: [
+          [f, 1],
+          [1, 1],
+        ],
+      });
+    });
+    it('Open cell on the last step', () => {
+      const state1 = reducer(baseInitialState, actions.setFlag([0, 0]));
+      const state2 = reducer(state1, actions.openCell([1, 0]));
+      const state3 = reducer(state2, actions.openCell([0, 1]));
+      const state4 = reducer(state3, actions.openCell([1, 1]));
+
+      expect(state4).toEqual({
+        ...baseInitialState,
+        isGameStarted: false,
+        isWin: true,
+        isGameOver: true,
+        flagCounter: 1,
+        playerField: [
+          [f, 1],
+          [1, 1],
+        ],
+      });
+    });
   });
 });
