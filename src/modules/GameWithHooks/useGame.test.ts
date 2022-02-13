@@ -140,20 +140,18 @@ describe("GameWithHooks test cases", () => {
 	it('Player win a game when open the last cell', () => {
 		const { result } = renderHook(useGame);
 
-		const { gameField } = result.current;
-
-		for (const y of gameField.keys()) {
-			for (const x of gameField[y].keys()) {
-				const gameCell = gameField[y][x];
+		for (const y of result.current.gameField.keys()) {
+			for (const x of result.current.gameField[y].keys()) {
+				const gameCell = result.current.gameField[y][x];
 				act(() => {
 					gameCell === b && result.current.onContextMenu([y, x]);
 				});
 			}
 		}
 
-		for (const y of gameField.keys()) {
-			for (const x of gameField[y].keys()) {
-				const gameCell = gameField[y][x];
+		for (const y of result.current.gameField.keys()) {
+			for (const x of result.current.gameField[y].keys()) {
+				const gameCell = result.current.gameField[y][x];
 				act(() => {
 					gameCell < b && result.current.onClick([y, x]);
 				});
@@ -166,20 +164,18 @@ describe("GameWithHooks test cases", () => {
 	it('Player win the game when setup flag to the last cell', () => {
 		const { result } = renderHook(useGame);
 
-		const { gameField } = result.current;
-
-		for (const y of gameField.keys()) {
-			for (const x of gameField[y].keys()) {
-				const gameCell = gameField[y][x];
+		for (const y of result.current.gameField.keys()) {
+			for (const x of result.current.gameField[y].keys()) {
+				const gameCell = result.current.gameField[y][x];
 				act(() => {
 					gameCell !== b && result.current.onClick([y, x]);
 				});
 			}
 		}
 
-		for (const y of gameField.keys()) {
-			for (const x of gameField[y].keys()) {
-				const gameCell = gameField[y][x];
+		for (const y of result.current.gameField.keys()) {
+			for (const x of result.current.gameField[y].keys()) {
+				const gameCell = result.current.gameField[y][x];
 				act(() => {
 					gameCell === b && result.current.onContextMenu([y, x]);
 				});

@@ -1,42 +1,60 @@
-import { checkItemInField, getNeigboursItems } from "./CellsManipulators";
-import { detectSolvedPuzzle } from "./DetectSolvedPuzzle";
-import { CellState, Coords, Field } from "./Field";
+import { CellState, Coords, Field } from './Field';
+import { copyField } from './copyField';
+import { checkItemInField, getNeigboursItems } from './CellsManipulators';
+import { detectSolvedPuzzle } from './DetectSolvedPuzzle';
 
-const {empty, hidden, bomb, flag, weakFlag} = CellState;
-
+/**
+ * Open cell in the player field using game field info
+ * @param {Coords} coords
+ * @param {Field} playerField
+ * @param {Field} gameField
+ * @returns {[Field, boolean, number]}
+ */
 export const openCell = (
   coords: Coords,
   playerField: Field,
   gameField: Field
+): [Field, boolean] =>
+  openCellRecursively(coords, copyField(playerField), gameField);
+
+/**
+ * @param {Coords} coords
+ * @param {Field} playerField
+ * @param {Field} gameField
+ * @returns {[Field, boolean, number]}
+ */
+export const openCellRecursively = (
+  coords: Coords,
+  playerField: Field,
+  gameField: Field
 ): [Field, boolean] => {
+  const { empty, hidden, bomb, weakFlag, flag } = CellState;
+
   const [y, x] = coords;
   const gameCell = gameField[y][x];
   const playerCell = playerField[y][x];
 
-  if(gameCell === bomb) {
-    // game over if player opened bomb
+  if (gameCell === bomb) {
     throw new Error('Game Over');
   }
 
-  if(flag === playerCell) {
+  if (flag === playerCell) {
     return [playerField, false];
   }
 
-  // reveal a cell with the number
   playerField[y][x] = gameCell;
 
-  // reveal neighbour empty cells if use clicked empty cells
-  if(gameCell === empty && [hidden, weakFlag].includes(playerCell)) {
+  if (gameCell === empty && [hidden, weakFlag].includes(playerCell)) {
     const items = getNeigboursItems(coords);
-    for (const coords of Object.values(items)) {
-      if(checkItemInField(coords, gameField)) {
-        const [y, x] = coords;
-        if(checkItemInField([y, x], gameField)) {
-          [playerField] = openCell(coords, playerField, gameField);
-        }
+
+    for (const [y, x] of Object.values(items)) {
+      if (checkItemInField([y, x], gameField)) {
+        [playerField] = openCellRecursively([y, x], playerField, gameField);
       }
     }
   }
-  const [isSolved, flagCounter] = detectSolvedPuzzle(playerField, gameField);
+
+  const [isSolved] = detectSolvedPuzzle(playerField, gameField);
+
   return [playerField, isSolved];
-}
+};
